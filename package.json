@@ -1,0 +1,19 @@
+{
+  "name": "json-bin",
+  "version": "1.0.0",
+  "description": "task from class to prectice crud and wrapping network requests",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ItsDrTsach/network-wrapper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ItsDrTsach/network-wrapper/issues"
+  },
+  "homepage": "https://github.com/ItsDrTsach/network-wrapper#readme"
+}

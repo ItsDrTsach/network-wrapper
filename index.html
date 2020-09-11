@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AJAX</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <link rel='stylesheet' type='text/css' href='style.css'>
     <script src="./main.js"></script>
     <script src="./ajax.js"></script>
     <script src="./network.js"></script>
     <script src="./secret.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script> <!-- todo later: use a local copy installed via npm -->
 </head>
 <body>
-    <h1>Crud</h1>
+    <h1>My JSON saver</h1>
     <div id="control">
-        <button onclick="newBin()">New</button>
-        <button onclick="loadBin()">Load</button>
-        <button onclick="saveBin()">Save</button> <!-- fix: disable button when cant save -->
-        <button onclick="deleteBin()">Delete</button> <!-- fix: disable button when cant delete -->
+        <button onclick="newBin()" class="btn btn-primary">New</button>
+        <button onclick="loadBin()" class="btn btn-primary">Load</button>
+        <button onclick="saveBin()" class="btn btn-primary">Save</button> <!-- fix: disable button when cant save -->
+        <button onclick="deleteBin()" class="btn btn-primary">Delete</button> <!-- fix: disable button when cant delete -->
     </div>
+    <input type="text" id="binIdInput" value="5f5aa8b5302a837e9563eff6" placeholder="enter bin id here">
+    <input type="text" id="binNameInput" placeholder="enter bin name here(only for new bin)">
     <div id="view">
         <!-- todo later: make editable only when bin is loaded -->
         <textarea name="json data" id="json-data" placeholder="json string" rows="10" cols="100"></textarea>

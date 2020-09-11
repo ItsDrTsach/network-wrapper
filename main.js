@@ -1,63 +1,87 @@
-// fix: dont load metadata
-// fix: handle prompt cancellation gracefully
 async function loadBin() {
-  const binId = prompt("binId"); // todo later: ask and load by bin name and not id
-  document.querySelector("#error").hidden = true;
+  resetError();
+  const { value : binId } = document.querySelector('#binIdInput')
+  // todo later: ask and load by bin name and not id
   try {
-    const binJson = await read(binId);
-    const binData = JSON.stringify(binJson); // fix: make jsonString a two spaced indented json
-    console.log(`loaded bin: ${binId}`, binData);
-    document.querySelector("#view > textarea").value = binData;
+    const res = await network.get(binId);
+    console.log(`loaded bin: ${binId}`, res)
+    displayData(res)
   } catch (error) {
-    // todo later: move functionality to a dedicated function to handle and display and all user errors
-    document.querySelector("#error").hidden = false;
-    document.querySelector("#error").innerText = error;
+    displayError(error)
     console.error(`error reading bin:`, error || "");
   }
+  resetInput();
 }
 
 async function newBin() {
+  resetError();
   // todo later: confirm() wether to delete unsaved work
-  const binName = prompt("bin name"); // todo later: replace prompt with querying an <input>
-  const initialData = { hello: "world" };
-
+  const { value : inputData  } = document.querySelector('#json-data');
+  const { value : binName } = document.querySelector('#binNameInput');
   try {
-    const binData = await create(binName, initialData);
-    document.querySelector("#error").hidden = true;
-    console.log(`Created bin ${binName} with data`, binData); // fix: display to the user the content of the json and metadata
-    document.getElementById("metadata").innerText = binData.metadata.id;
+    if(binName === "" )  {
+      throw new Error('must fill In new bin Name')
+    }else{
+    const res = await network.post(binName, inputData);
+    console.log(`Created bin ${binName} with data`, res);
+    displayData(res)
+  }
   } catch (error) {
-    document.querySelector("#error").hidden = false;
-    document.querySelector("#error").innerText = error;
+    displayError(error)
     console.error("error creating bin: ", error);
   }
+
 }
 
 async function saveBin() {
-  const binId = document.getElementById("metadata").innerText;
-  const binData = document.querySelector("#view > textarea").value; // exercise: use "object destructuring with alias"
-
+  resetError();
+  const { innerText : binId } = document.getElementById("metadata");
+  const { value : binData } = document.querySelector("#view > textarea"); // exercise: use "object destructuring with alias"
   try {
     const res = await update(binId, binData);
-    document.querySelector("#error").hidden = true;
     console.log(`Updated bin ${binId} with data`, res); // fix: display to the user the content of the json and metadata
+    displayData(res);
   } catch (error) {
-    document.querySelector("#error").hidden = false;
-    document.querySelector("#error").innerText = error;
+    displayError(error)
     console.error("error creating bin: ", error);
   }
+  resetInput();
 }
 
 async function deleteBin() {
-  const binId = document.getElementById("metadata").innerText;
-
+  resetError();
+  const { value : binId } = document.getElementById("binIdInput");
   try {
-    const res = await destroy(binId);
-    document.querySelector("#error").hidden = true;
+    const res = await network.delete(binId);
     console.log(`Deleted bin ${binId} with data`, res);
+    displayData( res, true );
   } catch (error) {
-    document.querySelector("#error").hidden = false;
-    document.querySelector("#error").innerText = error;
-    console.error("error creating bin: ", error);
+    displayError(error)
+    console.error("error deleting bin: ", error);
   }
+  resetInput();
+}
+
+
+// DOM handling helpers
+
+function displayError (error) {
+  //display the error at the error element
+  document.querySelector("#error").hidden = false;
+  document.querySelector("#error").innerText = error;
+}
+
+function displayData (res, deleteFlag) {
+  const metaData = JSON.stringify(res.metadata);
+  const textAreaDisplay = deleteFlag? "deleted bin with id: " + JSON.stringify(res.metadata.id):JSON.stringify(res.record)
+  document.querySelector("#view > textarea").value = textAreaDisplay;
+  document.querySelector("#metadata").innerText = "MetaData: " + metaData;
+}
+
+function resetInput(){
+  document.querySelector('#binIdInput').value = ""
+}
+
+function resetError(){
+  document.querySelector("#error").hidden = true;
 }
